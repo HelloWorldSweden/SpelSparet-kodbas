@@ -1,11 +1,10 @@
 fileFormatVersion: 2
-guid: fc3ebfbcac5050c46b096a539633aa5e
-timeCreated: 1499185866
+guid: 71393525910e0154e95dd8c411328696
+timeCreated: 1499185432
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences:
-  - bulletPrefab: {instanceID: 0}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
