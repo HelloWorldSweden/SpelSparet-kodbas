@@ -21,7 +21,7 @@ public class ShootBullet : MonoBehaviour {
 	 * "mouse 0"		vänster musknapp
 	 * "mouse 1"		mitten musknapp
 	 * "mouse 2"		höger musknapp
-	 * "z"				bokstaven z
+	 * "e"				bokstaven e
 	 * "left ctrl"		vänster kontrol (Ctrl)
 	 * "right shift"	⇧ höger shift
 	 * "left"			← vänster piltangent
@@ -106,15 +106,12 @@ public class ShootBullet : MonoBehaviour {
 		// Ta bort överflödiga mellanslag och gör till små bokstäver
 		fireWithKey = fireWithKey.Trim().ToLower();
 
-		// Är inte tom sträng
-		if (fireWithKey != "") {
-			try {
-				// Testa om Input.GetKey funkar med den tangenten
-				Input.GetKey(fireWithKey);
-			} catch {
-				// Om inte så återställ värdet
-				fireWithKey = "";
-			}
+		try {
+			// Testa om Input.GetKey funkar med den tangenten
+			Input.GetKey(fireWithKey);
+		} catch {
+			// Om inte så återställ värdet
+			fireWithKey = "";
 		}
 	}
 
