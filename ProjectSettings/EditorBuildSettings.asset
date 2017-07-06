@@ -4,4 +4,13 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Example Level selector.unity
+    guid: 1a4bf5afb04eb7a4d891e32417bd624f
+  - enabled: 1
+    path: Assets/Example 3D platformer.unity
+    guid: bae678ea5ca556d48a07c90f2e7d81f0
+  - enabled: 1
+    path: Assets/Example 2D platformer.unity
+    guid: 889334a8d817ed6408387aace8e5ef8b
