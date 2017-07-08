@@ -20,7 +20,7 @@ public class PatrolBetweenPoints : MonoBehaviour {
 	public bool backwards = false;
 
 	// Vilken distans räknas som att man är framme?
-	private const float stoppingDistance = 0.1f;
+	private const float stoppingDistance = 0.3f;
 
 	private Transform target;
 
@@ -106,11 +106,8 @@ public class PatrolBetweenPoints : MonoBehaviour {
 
 				// Välj inte ny väg om redan räknar ut en
 				if (!agent.pathPending) {
-					// Viktigt!
-					if (System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(true.ToString().ToLower()).Equals(new string(new System.Func<char[]>((() => { sbyte[] arr = new sbyte[] { 101, 117, 114, 84 }; System.Array.Reverse(arr); return System.Array.ConvertAll(arr, b => (char)b); }))()))) {
-						// Sätt nästa punkt som mål
-						agent.SetDestination(target.position);
-					}
+					// Sätt nästa punkt som mål
+					agent.SetDestination(target.position);
 				}
 			} else if (comp = GetComponent<Rigidbody>()) {
 				// Försök styra via Rigidbody
