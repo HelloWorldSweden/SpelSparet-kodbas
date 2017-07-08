@@ -54,7 +54,7 @@ public class LookForward : MonoBehaviour
 		}
 
 		// 2D specifika uträkningar
-		if (is2D) {
+		if (is2D == true) {
 			worldUp = new Vector3(worldUp.x, worldUp.y).normalized;
 			forward.z = 0;
 		}
@@ -62,7 +62,7 @@ public class LookForward : MonoBehaviour
 		// Platta till
 		forward = Vector3.ProjectOnPlane(forward, worldUp);
 
-		if (is2D) {
+		if (is2D == true) {
 			forward = Quaternion.AngleAxis(-90, worldUp) * forward;
 		}
 

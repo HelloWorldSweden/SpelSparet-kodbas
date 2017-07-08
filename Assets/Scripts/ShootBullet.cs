@@ -39,6 +39,8 @@ public class ShootBullet : MonoBehaviour {
 	// Förstör skjutna klonen efter så många sekunder
 	// Sätt till 0 (noll) för att avaktivera
 	public float killCloneAfter = 5;
+	// (Frivilligt) Ljud som kan spelas när skriptet skjuter
+	public AudioSource soundOnFire;
 	
 	private void Start() {
 		// Ge error meddelande för att lättare kunna debugga
@@ -61,7 +63,7 @@ public class ShootBullet : MonoBehaviour {
 		* Input.GetKeyDown(KeyCode key)			Blev knappen precis släppt? (Aktiveras endast 1 gång per knapptryck)
 		* Input.GetKey(KeyCode key)				Är knappen nedtryckt? (Aktiveras flera gånger per sekund)
 		*/
-		if (Input.GetKeyDown(fireWithKey)) {
+		if (Input.GetKeyDown(fireWithKey) == true) {
 			// Räkna ut värden som kommer användas
 			Vector3 position = transform.position;
 			Quaternion rotation = transform.rotation;
@@ -91,8 +93,12 @@ public class ShootBullet : MonoBehaviour {
 				body2d.AddRelativeForce(force2d, ForceMode2D.Impulse);
 			}
 
-		}
+			// Spela upp ljud
+			if (soundOnFire != null) {
+				soundOnFire.Play();
+			}
 
+		}
 	}
 	
 	// Validerar det man skriver in i inspektorn

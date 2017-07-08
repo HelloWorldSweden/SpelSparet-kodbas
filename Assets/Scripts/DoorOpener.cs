@@ -51,12 +51,12 @@ public class DoorOpener : MonoBehaviour {
 	// DoorScript frågar den ifall den vill öppna
 	public bool WantToOpen(bool doorLocked) {
 		// Öppna inte om det krävs nyckel men har ingen
-		if (doorLocked && !this.openLocked) {
+		if (doorLocked == true && this.openLocked == false) {
 			return false;
 		}
 
 		// Öppna bara om en knapp blev tryckt
-		if (waitForInput) {
+		if (waitForInput == true) {
 			return Input.GetKeyDown(openWithKey);
 		}
 

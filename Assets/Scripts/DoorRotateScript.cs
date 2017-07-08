@@ -20,6 +20,12 @@ public class DoorRotateScript : MonoBehaviour {
 	// Kräver att öppnaren har /hasKey/=true
 	public bool locked = false;
 
+	[Header("Sound effects")]
+	// (Frivilligt) Ljud som kan spelas då dörren öppnas
+	public AudioSource soundOnOpen;
+	// (Frivilligt) Ljud som kan spelas då dörren stängs
+	public AudioSource soundOnClose;
+
 	// "private" för den behöver inte kommas åt via unity inspektorn
 	private Quaternion startValue;
 
@@ -39,22 +45,33 @@ public class DoorRotateScript : MonoBehaviour {
 
 		foreach (DoorOpener opener in FindObjectsOfType<DoorOpener>()) {
 			// Jämför distansen mellan min och öppnarens positioner
-			if (opener.NearEnough(transform.position)) {
+			if (opener.NearEnough(transform.position) == true) {
 				anyNear = true;
 
 				// Kolla om öppnaren vill öppna dörren
-				if (opener.WantToOpen(locked)) {
+				if (opener.WantToOpen(locked) == true) {
 					// Dörren ska öppnas!
 					target = 1;
+
+					// Spela ljud
+					if (soundOnOpen != null && soundOnOpen.clip != null) {
+						soundOnOpen.Play();
+					}
+
 					// Kan avbryta funktionen
 					return;
 				}
 			}
 		}
 		
-		if (!anyNear) {
+		if (anyNear == false) {
 			// Dörren ska stängas!
 			target = 0;
+
+			// Spela ljud
+			if (soundOnClose != null && soundOnClose.clip != null) {
+				soundOnClose.Play();
+			}
 		}
 	}
 

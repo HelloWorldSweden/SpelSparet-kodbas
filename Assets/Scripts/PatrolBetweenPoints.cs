@@ -66,7 +66,7 @@ public class PatrolBetweenPoints : MonoBehaviour {
 
 			} else {
 				// Ta nästa
-				if (backwards) {
+				if (backwards == true) {
 					// Bläddra baklänges
 					index--;
 					if (!repeat && index < 0) {
@@ -212,7 +212,7 @@ public class PatrolBetweenPoints : MonoBehaviour {
 			NextTarget();
 		}
 
-		if (target && (!agent || !agent.hasPath)) {
+		if (target != null && (!agent || !agent.hasPath)) {
 			// Rita linje mellan sig själv och nästa punkt
 			Gizmos.color = new Color(0, 1, 0.2f, 0.8f);
 			Gizmos.DrawLine(transform.position, target.position);
@@ -224,11 +224,11 @@ public class PatrolBetweenPoints : MonoBehaviour {
 			}
 		}
 
-		if (!Application.isPlaying) {
+		if (Application.isPlaying == false) {
 			target = null;
 		}
 
-		if (agent && agent.hasPath) {
+		if (agent != null && agent.hasPath == true) {
 			Vector3[] corners = agent.path.corners;
 
 			// Ritar linjer mellan alla hörn längst pathfinding vägen

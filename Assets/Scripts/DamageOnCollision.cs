@@ -19,12 +19,12 @@ public class DamageOnCollision : MonoBehaviour {
 	public void DealDamage(GameObject other) {
 		// Avgör ifall ska skada objektet som kolliderades
 		// Om damageIfSameTag == true, eller om objektet som kolliderades med har en annan tagg
-		if (damageIfSameTag || !other.CompareTag(gameObject.tag)) {
+		if (damageIfSameTag == true || other.CompareTag(gameObject.tag) == false) {
 			// Skicka 'skada' meddelande till det den kolliderade med
 			other.SendMessage("TakeDamage", damage, SendMessageOptions.DontRequireReceiver);
 
 			// Förstör sig själv
-			if (destroySelf) {
+			if (destroySelf == true) {
 				Destroy(gameObject);
 			}
 		}
@@ -34,7 +34,7 @@ public class DamageOnCollision : MonoBehaviour {
 	private void OnCollisionStay2D(Collision2D collision) {
 		// Hämta main objektet att skicka meddelande till
 		GameObject main = collision.gameObject;
-		if (collision.rigidbody) {
+		if (collision.rigidbody != null) {
 			main = collision.rigidbody.gameObject;
 		}
 
@@ -46,7 +46,7 @@ public class DamageOnCollision : MonoBehaviour {
 	private void OnCollisionStay(Collision collision) {
 		// Hämta main objektet att skicka meddelande till
 		GameObject main = collision.gameObject;
-		if (collision.rigidbody) {
+		if (collision.rigidbody != null) {
 			main = collision.rigidbody.gameObject;
 		}
 

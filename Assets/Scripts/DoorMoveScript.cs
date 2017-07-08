@@ -41,11 +41,11 @@ public class DoorMoveScript : MonoBehaviour {
 
 		foreach (DoorOpener opener in FindObjectsOfType<DoorOpener>()) {
 			// Jämför distansen mellan min och öppnarens positioner
-			if (opener.NearEnough(startPosition)) {
+			if (opener.NearEnough(startPosition) == true) {
 				anyNear = true;
 
 				// Kolla om öppnaren vill öppna dörren
-				if (opener.WantToOpen(locked)) {
+				if (opener.WantToOpen(locked) == true) {
 					// Dörren ska öppnas!
 					target = 1;
 					// Kan avbryta funktionen
