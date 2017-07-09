@@ -694,7 +694,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32ed96458c52aa04b8f02a012405eba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupIfSameTag: 0
+  requireSameTag: 0
+  destroyOnPickup: 1
+  soundOnPickup: {fileID: 0}
 --- !u!23 &475717827
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1590,7 +1592,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openOffset: {x: 0, y: -15, z: 0}
   openTime: 4.3
-  locked: 0
+  locked: 1
   soundOnOpen: {fileID: 812166918}
   soundOnClose: {fileID: 812166918}
 --- !u!4 &812166920
