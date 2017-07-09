@@ -5,7 +5,8 @@ using UnityEngine;
 /* 
  * Läggs till på dörrobjektet
  * 
- * Kräver att ni har DoorOpener skriptet tillagt
+ * Kräver att ni har DoorOpener skriptet tillagt i projektet
+ * (alltså bland filerna i projekt mappen, och inte bland spelobjekten i scenen)
  * 
  */
 [DisallowMultipleComponent]
@@ -20,49 +21,87 @@ public class DoorMoveScript : MonoBehaviour {
 	// Kräver att öppnaren har /hasKey/=true
 	public bool locked = false;
 
+	[Header("Sound effects")]
+	// (Frivilligt) Ljud som kan spelas då dörren öppnas
+	public AudioSource soundOnOpen;
+	// (Frivilligt) Ljud som kan spelas då dörren stängs
+	public AudioSource soundOnClose;
+
 	// "private" för den behöver inte kommas åt via unity inspektorn
 	private Vector3 startValue;
 
 	// Hur öppen dörren är, 0=stängd, 1=öppen
 	private float percentage = 0;
 	// Vart den är påväg
-	private float target = 0;
+	private int target = 0;
 
 	private void Start() {
 		// Hämta startvärdet. eulerAngles=rotation i grader (0° till 360°) och x,y,z form
 		startValue = transform.localPosition;
 	}
 
-	// Egendefinierad funktion för att kolla om det är någon DoorOpener i närheten
-	private void CalculateTarget() {
-		bool anyNear = false;
-		// Räkna ut startPositionen baserat på dörrens 'parent'
+	public int CalculateTarget() {
+		bool isOpen = target != 0;
+		// Eftersom dörren förflyttas så kan vi inte använda dess egna position utan istället ett start värde
 		Vector3 startPosition = transform.parent ? transform.parent.TransformPoint(startValue) : startValue;
 
+		// Loopa igenom alla "dörröppnare"
 		foreach (DoorOpener opener in FindObjectsOfType<DoorOpener>()) {
 			// Jämför distansen mellan min och öppnarens positioner
 			if (opener.NearEnough(startPosition) == true) {
-				anyNear = true;
 
-				// Kolla om öppnaren vill öppna dörren
-				if (opener.WantToOpen(locked) == true) {
-					// Dörren ska öppnas!
-					target = 1;
-					// Kan avbryta funktionen
-					return;
+				if (isOpen) {
+					// Är öppen, fortsätt vara öppen
+					return target = 1;
+				} else {
+					// Är stängd, kolla om öppnaren vill öppna dörren
+					if (opener.WantToOpen(this.locked)) {
+						// Öppna dörren
+						return target = 1;
+					}
 				}
+
 			}
 		}
-		
-		if (!anyNear) {
-			// Dörren ska stängas!
-			target = 0;
+
+		// Ingen "dörröppnare" var nära nog eller ville öppna, så stäng dörren
+		return target = 0;
+	}
+
+	public AudioSource CalculateTargetAndAudio() {
+		int oldTarget = target;
+		CalculateTarget();
+
+		// Skedde en förändring?
+		if (target != oldTarget) {
+			// Öppning eller stängning?
+			if (target == 0) {
+				// Öppningsljud
+				return soundOnClose;
+			} else {
+				// Stängningsljud
+				return soundOnOpen;
+			}
+		}
+
+		// Ingendera
+		return null;
+	}
+
+	// Egendefinierad funktion för att kolla om det är någon DoorOpener i närheten
+	private void CalculateAndPlaySoundEffects() {
+		AudioSource audio = CalculateTargetAndAudio();
+
+		// Finns ljudet?
+		if (audio != null && audio.clip != null) {
+			// Spela ljud
+			audio.Play();
 		}
 	}
 
 	private void Update() {
-		// Vilket värde /percentage/ ska röra sig mot
-		CalculateTarget();
+		// Vilket värde /percentage/ ska röra sig mot + spela öppningsljud
+		CalculateAndPlaySoundEffects();
 
 		// Öka/sänk percentage beroende på ifall det är någon nära eller inte
 		percentage = Mathf.MoveTowards(percentage, target, Time.deltaTime / openTime);

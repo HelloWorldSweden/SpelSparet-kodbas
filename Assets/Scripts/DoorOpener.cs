@@ -9,7 +9,7 @@ using UnityEngine;
 public class DoorOpener : MonoBehaviour {
 
 	// Distansen som dörrar öppnas ifrån
-	public float range = 5;
+	public float range = 7;
 
 	// Kan objektet öppna låsta dörrar?
 	public bool openLocked = false;
