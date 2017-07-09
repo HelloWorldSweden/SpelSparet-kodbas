@@ -39,6 +39,8 @@ public class ShootBullet : MonoBehaviour {
 	// Förstör skjutna klonen efter så många sekunder
 	// Sätt till 0 (noll) för att avaktivera
 	public float killCloneAfter = 5;
+
+	[Header("Sound effects")]
 	// (Frivilligt) Ljud som kan spelas när skriptet skjuter
 	public AudioSource soundOnFire;
 	

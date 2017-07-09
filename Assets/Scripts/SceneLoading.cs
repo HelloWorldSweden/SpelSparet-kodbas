@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
  */
 public class SceneLoading : MonoBehaviour {
 
+	[Header("Sound effects")]
 	// (Frivilligt) Ljud som kan spelas då skriptet byter scen
 	public AudioSource soundOnLoadScene;
 
