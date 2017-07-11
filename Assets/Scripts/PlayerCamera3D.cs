@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCameraFPS : MonoBehaviour {
+public class PlayerCamera3D : MonoBehaviour {
 
 	// Distansen som kameran kommer försöka hållas på
 	public float keepDistance = 0;
