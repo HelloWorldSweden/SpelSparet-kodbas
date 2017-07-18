@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/* 
+ * Detta skript lägger du till på kamera objektet.
+ * 
+ * För FPS sätter du /keepDistance/ till 0.
+ * För tredjepersons vy sätter du /keepDistance/ till t.ex. 15.
+ */
 public class PlayerCamera3D : MonoBehaviour {
 
 	// Distansen som kameran kommer försöka hållas på
@@ -15,18 +21,27 @@ public class PlayerCamera3D : MonoBehaviour {
 
 	[Header("Sensitivity")]
 
+	/* 
+	 * Negativa värden inverterar. Dvs: upp blir ned & ned blir upp
+	 * Gäller för /verticalSpeed/, /horizontalSpeed/ samt /zoomSpeed/
+	 */
+
 	// Vertikal = upp & ned, norr & syd
-	// Negativa värden inverterar den. Dvs: upp blir ned & ned blir upp
 	public float verticalSpeed = -4;
 	// Horisontell = vänster & höger, väst & öst
 	public float horizontalSpeed = 4;
+	// Hur snabbt man zoomar. En 0'a betyder ingen zoom
+	public float zoomSpeed = 1;
 
 	// Vinkeln för kameran
 	private Vector2 angle;
+	// Avståndet för kameran
+	private float distance;
 
 	private void Start() {
-		// Hämta start vinkeln
+		// Hämta start värden
 		angle = transform.eulerAngles;
+		distance = keepDistance;
 
 		// Lås och göm musen (går att visa igen med Esc knappen)
 		Cursor.lockState = CursorLockMode.Locked;
@@ -44,11 +59,19 @@ public class PlayerCamera3D : MonoBehaviour {
 		// Uppdatera från användarens rörelse
 		angle.x += Input.GetAxis("Mouse Y") * verticalSpeed;
 		angle.y += Input.GetAxis("Mouse X") * horizontalSpeed;
-
-		// Omvandla värdet till intervallet mellan 
+		distance += Input.mouseScrollDelta.y * zoomSpeed;
+		
+		// Modifiera värdena så dem passar bättre
 		angle.y = Mathf.DeltaAngle(0, angle.y);
-		// Lås så man inte kan kolla upp förbi himmelen
 		angle.x = Mathf.Clamp(angle.x, -40f, 80f);
+
+		if (Mathf.Approximately(zoomSpeed, 0f)) {
+			// Ingen zoom
+			distance = keepDistance;
+		} else {
+			// Lås zoom mellan 25% och 150% av keepDistance
+			distance = Mathf.Clamp(distance, keepDistance * 0.25f, keepDistance * 1.5f);
+		}
 
 		// Uppdatera kamerans rotation
 		transform.eulerAngles = angle;
@@ -65,14 +88,14 @@ public class PlayerCamera3D : MonoBehaviour {
 			/*
 			 * Kolla efter objekt som kan vara ivägen
 			 */
-			Ray ray = new Ray(transform.parent.position, -keepDistance * transform.forward);
+			Ray ray = new Ray(transform.parent.position, -distance * transform.forward);
 			RaycastHit hit;
 
 			// Ta lite närmre så att man inte ser genom väggar lika enkelt
-			float subtractDistance = keepDistance * 0.15f;
+			float subtractDistance = distance * 0.15f;
 
 			// Skapa en "stråle" som kollar efter kollision, kör if-satsen om den kolliderar med något
-			if (Physics.Raycast(ray, out hit, keepDistance, wallLayerMask)) {
+			if (Physics.Raycast(ray, out hit, distance, wallLayerMask)) {
 
 				if (hit.distance < subtractDistance) {
 					// Tillräckligt nära, ta bara punkten
@@ -82,12 +105,12 @@ public class PlayerCamera3D : MonoBehaviour {
 					return hit.point + transform.forward * subtractDistance;
 				}
 			} else {
-				return ray.origin + transform.forward * (subtractDistance - keepDistance);
+				return ray.origin + transform.forward * (subtractDistance - distance);
 			}
 		}
 
 		// Ta bara fast avstånd ifrån parent
-		return transform.parent.position - keepDistance * transform.forward;
+		return transform.parent.position - distance * transform.forward;
 	}
 
 	private void OnDrawGizmosSelected() {
