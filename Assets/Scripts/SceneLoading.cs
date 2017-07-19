@@ -48,4 +48,18 @@ public class SceneLoading : MonoBehaviour {
 		SceneManager.LoadScene(name);
 	}
 
+	// Ladda nuvarande scenen
+	public void ReloadScene() {
+		LoadScene(SceneManager.GetActiveScene().name);
+	}
+
+	// Avsluta spelet
+	public void ExitGame() {
+#if UNITY_EDITOR
+		UnityEditor.EditorApplication.isPlaying = false;
+#else
+		Application.Quit();
+#endif
+	}
+
 }
