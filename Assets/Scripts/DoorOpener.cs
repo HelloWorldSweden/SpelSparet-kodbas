@@ -3,8 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /* 
- * Skriptet som läggs på dem GameObject som ska kunna öppna dörrar.
- * Dörrar öppnas automatiskt när man är nära nog
+ * << VAD GÖR SCRIPTET ? >> 
+ *		Öppnar dörrscripten som är i närheten.
+ * 
+ * << VAR SÄTTER JAG SCRIPTET? >>
+ *		På dem objekt som ska öppna dörrar när dem är i närheten av dem.
+ *		Kan vara spelare och fiender.
+ * 
+ * << SCRIPTET FUNKAR INTE UTAN... >>
+ *		..att det finns dörrscript ("DoorRotateScript" && "DoorMoveScript") utplacerade på andra spelobjekt.
+ *		
+ *		..att dörrscriptet som är i närheten inte är låst förutom ifall detta script har
+ *		  /openLocke/ fältet icheckat.
+ *		  
+ *		..att /openWithKey/ knappen är klickad förutom ifall /waitForInput/ fältet är urcheckat.
+ * 
+ * << VIKTIGT ATT NOTERA >>
+ *		De dörrscript som detta script öppnar är "DoorRotateScript" och "DoorMoveScript".
+ *		
+ *		Om /locked/ fältet är icheckat på dörrscriptet så kan dörren endast öppnas ifall
+ *		det detta script har /openLocked/ fältet icheckat.
  */
 public class DoorOpener : MonoBehaviour {
 
@@ -38,7 +56,7 @@ public class DoorOpener : MonoBehaviour {
 	public string openWithKey = "";
 
 	// Ritar lite i editorn, men inte i själva spelet
-	private void OnDrawGizmosSelected() {
+	void OnDrawGizmosSelected() {
 		Gizmos.color = new Color(1, 0, 1, 0.5f);
 		Gizmos.DrawWireSphere(transform.position, range);
 	}
@@ -66,7 +84,7 @@ public class DoorOpener : MonoBehaviour {
 
 	// Validerar det man skriver in i inspektorn
 	// Överkurs, oroa er inte om detta
-	private void OnValidate() {
+	void OnValidate() {
 		// Ta bort överflödiga mellanslag och gör till små bokstäver
 		openWithKey = openWithKey.Trim().ToLower();
 		

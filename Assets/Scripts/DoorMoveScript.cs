@@ -3,22 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /* 
- * Läggs till på dörrobjektet
+ * << VAD GÖR SCRIPTET ? >> 
+ *		Öppnar en dörr genom att förflytta den (skjutdörr varianten).
  * 
- * Kräver att ni har DoorOpener skriptet tillagt i projektet
- * (alltså bland filerna i projekt mappen, och inte bland spelobjekten i scenen)
+ * << VAR SÄTTER JAG SCRIPTET? >>
+ *		På dörren. Räcker med det objekt som ska förflytta sig.
  * 
+ * << SCRIPTET FUNKAR INTE UTAN... >>
+ *		..att det finns dörröppnarscript ("DoorOpener") utplacerade på andra spelobjekt.
+ *		
+ *		..att dörröppnarscriptet som är i närheten kan öppna låsta dörrar ifall detta
+ *		  scripts /locked/ fält är icheckat.
+ * 
+ * << VIKTIGT ATT NOTERA >>
+ *		Dörren öppnas av ett annat script som heter "DoorOpener".
+ * 
+ *		Om /locked/ fältet är icheckat så kan dörren endast öppnas ifall
+ *		det "DoorOpener" script som är i närheter har /openLocked/ icheckat.
+ * 
+ *		Finns ett systerscript vid namn "DoorRotateScript" som gör liknande grej.
  */
 [DisallowMultipleComponent]
 public class DoorMoveScript : MonoBehaviour {
 
-	// Vilken (lokal) rotation dörren har när den är öppen
+	// Vilken (lokal) position dörren förflyttas när den är öppen
 	public Vector3 openOffset = new Vector3(0,3,0);
 
 	// Hur många sekunder det tar för dörren att öppnas
 	public float openTime = 1;
 
-	// Kräver att öppnaren har /hasKey/=true
+	// Kräver att öppnaren har /openLocked/=true
 	public bool locked = false;
 
 	[Header("Sound effects")]
@@ -28,14 +42,14 @@ public class DoorMoveScript : MonoBehaviour {
 	public AudioSource soundOnClose;
 
 	// "private" för den behöver inte kommas åt via unity inspektorn
-	private Vector3 startValue;
+	Vector3 startValue;
 
 	// Hur öppen dörren är, 0=stängd, 1=öppen
-	private float percentage = 0;
+	float percentage = 0;
 	// Vart den är påväg
-	private int target = 0;
+	int target = 0;
 
-	private void Start() {
+	void Start() {
 		// Hämta startvärdet. eulerAngles=rotation i grader (0° till 360°) och x,y,z form
 		startValue = transform.localPosition;
 	}
@@ -89,7 +103,7 @@ public class DoorMoveScript : MonoBehaviour {
 	}
 
 	// Egendefinierad funktion för att kolla om det är någon DoorOpener i närheten
-	private void CalculateAndPlaySoundEffects() {
+	void CalculateAndPlaySoundEffects() {
 		AudioSource audio = CalculateTargetAndAudio();
 
 		// Finns ljudet?
@@ -99,7 +113,7 @@ public class DoorMoveScript : MonoBehaviour {
 		}
 	}
 
-	private void Update() {
+	void Update() {
 		// Vilket värde /percentage/ ska röra sig mot + spela öppningsljud
 		CalculateAndPlaySoundEffects();
 
@@ -113,7 +127,7 @@ public class DoorMoveScript : MonoBehaviour {
 	}
 
 	// Ganska mycket matte. Vad den åstakommer är så att värdet 0-1 går lite långsammare i början och i slutet.
-	private float EasingInOut(float t) {
+	float EasingInOut(float t) {
 		t *= 2;
 		if (t < 1) return 0.5f * t * t;
 		t--;

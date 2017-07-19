@@ -3,9 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/*
- * Som exempel objekt för att ladda en annan scen.
- * Samt kan Unity UI buttons länkas till LoadScene funktionen
+/* 
+ * << VAD GÖR SCRIPTET ? >> 
+ *		Innehåller endast 1 funktion, och det är att ladda en scen.
+ * 
+ * << VAR SÄTTER JAG SCRIPTET? >>
+ *		Förslagsvis på ett eget spelobjekt. (se "VIKTIGT ATT NOTERA")
+ * 
+ * << SCRIPTET FUNKAR INTE UTAN... >>
+ *		..att den scen som ska laddas är tillagd i "Build Settings".
+ *		  Lägg till scener i "Build Settings" genom att gå in på
+ *		  "File > Build Settings..."
+ *		  och sedan dra in dem scener ni önskar kunna öppna via script (inklusive detta script).
+ * 
+ * << VIKTIGT ATT NOTERA >>
+ *		Används primärt i "Example Level selector" scenen där UI knapparna har UnityEvent
+ *		inställningar som är kopplade till att avfyra detta scripts /LoadScene/ funktion.
  */
 public class SceneLoading : MonoBehaviour {
 

@@ -2,7 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Högst 1 DamageOnTrigger per GameObjekt
+/* 
+ * << VAD GÖR SCRIPTET ? >> 
+ *		Gör skada på HealthScript.
+ * 
+ * << VAR SÄTTER JAG SCRIPTET? >>
+ *		På ett objekt som har en trigger (både 2D och 3D funkar).
+ * 
+ * << SCRIPTET FUNKAR INTE UTAN... >>
+ *		..att det finns en collider med /isTrigger/ icheckat. Alltså en trigger!
+ *		
+ *		..att objektet som kolliderades med har annan tagg ifall /damageIfSameTag/ fältet är urcheckat.
+ * 
+ * << VIKTIGT ATT NOTERA >>
+ *		Ni kan även göra livpaket genom att sätta /damage/ fältet till ett negativt värde.
+ *		
+ *		Finns ett systerscript vid namn "DamageOnCollision" som gör liknande grej.
+ */
 [DisallowMultipleComponent]
 public class DamageOnTrigger : MonoBehaviour {
 
@@ -19,7 +35,7 @@ public class DamageOnTrigger : MonoBehaviour {
 	public void DealDamage(GameObject other) {
 		// Avgör ifall ska skada objektet som kolliderades
 		// Om damageIfSameTag == true, eller om objektet som kolliderades med har en annan tagg
-		if (damageIfSameTag == true || other.CompareTag(gameObject.tag) == false) {
+		if (damageIfSameTag == true || other.tag != gameObject.tag) {
 			// Skicka 'skada' meddelande till det den kolliderade med
 			other.SendMessage("TakeDamage", damage, SendMessageOptions.DontRequireReceiver);
 
@@ -31,7 +47,7 @@ public class DamageOnTrigger : MonoBehaviour {
 	}
 
 	// Kollisions metod för 2D
-	private void OnTriggerStay2D(Collider2D collider) {
+	void OnTriggerEnter2D(Collider2D collider) {
 		// Hämta main objektet att skicka meddelande till
 		GameObject main = collider.gameObject;
 		if (collider.attachedRigidbody != null) {
@@ -43,7 +59,7 @@ public class DamageOnTrigger : MonoBehaviour {
 	}
 
 	// Kollisions metod för 3D
-	private void OnTriggerStay(Collider collider) {
+	void OnTriggerEnter(Collider collider) {
 		// Hämta main objektet att skicka meddelande till
 		GameObject main = collider.gameObject;
 		if (collider.attachedRigidbody != null) {
@@ -53,10 +69,5 @@ public class DamageOnTrigger : MonoBehaviour {
 		// Annan funktion så man slipper skriva om
 		DealDamage(main);
 	}
-
-	private void OnValidate() {
-		// Tvinga damage variabelns värde att vara positivt eller 0
-		damage = Mathf.Max(damage, 0);
-	}
-
+	
 }

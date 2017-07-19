@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /*
- * Viktigt att tänka på för detta script:
+ * << VAD GÖR SCRIPTET ? >> 
+ * 		Scriptet skapar ett objekt vid spelarens knappstryckning.
+ * 		Plus ger den nya klonen ett kraft framåt (baserat på spelobjektets rotation).
  * 
- *	- Om kulan ni avfyrar kan kollidera med spelaren så 
- *	kan det vara orsaken till att den flyger iväg konstigt.
+ * << VAR SÄTTER JAG SCRIPTET? >>
+ * 		På änden av där du ska skjuta.
+ * 		T.ex som ett egen objekt på änden av ett vapen. 
  * 
- */
-
-/* För att använda flera tangenter kan ni
- * lägga till flera ShootBullet komponenter
+ * << SCRIPTET FUNKAR INTE UTAN... >>
+ * 		..att ge /fireWithKey/ ett acceptabelt värde.
+ * 		..att ge /bulletPrefab/ fältet ett värde (ett spelobjekt att spawna).
+ * 
+ * << VIKTIGT ATT NOTERA >>
+ * 		Akta så att inte kulan som skapas inte skadar er spelare!
  */
 public class ShootBullet : MonoBehaviour {
 
@@ -44,18 +49,7 @@ public class ShootBullet : MonoBehaviour {
 	// (Frivilligt) Ljud som kan spelas när skriptet skjuter
 	public AudioSource soundOnFire;
 	
-	private void Start() {
-		// Ge error meddelande för att lättare kunna debugga
-		if (bulletPrefab == null) {
-			Debug.LogError("Field bulletPrefab cannot be null! (GameObject \"" + this.name + "\")");
-		}
-	}
-
-	private void Update() {
-		// Avbryter funktionen om bulletPrefab inte är satt
-		if (bulletPrefab == null) {
-			return;
-		}
+	void Update() {
 
 		/* Kolla om knappen blev precis nedtryckt.
 		* 
@@ -66,6 +60,13 @@ public class ShootBullet : MonoBehaviour {
 		* Input.GetKey(KeyCode key)				Är knappen nedtryckt? (Aktiveras flera gånger per sekund)
 		*/
 		if (Input.GetKeyDown(fireWithKey) == true) {
+
+			// Avbryter funktionen om bulletPrefab inte är satt
+			if (bulletPrefab == null) {
+				Debug.LogError("Saknar kulan som ska skapas i \"ShootBullet\" scriptet på \"" + name + "\" spelobjektet!");
+				return;
+			}
+
 			// Räkna ut värden som kommer användas
 			Vector3 position = transform.position;
 			Quaternion rotation = transform.rotation;
@@ -91,8 +92,8 @@ public class ShootBullet : MonoBehaviour {
 			// Kolla så att det fanns en först
 			if (body2d != null) {
 				// Applisera kraften
-				Vector2 force2d = Vector2.right * bulletForce;
-				body2d.AddRelativeForce(force2d, ForceMode2D.Impulse);
+				Vector2 force2d = transform.right * bulletForce;
+				body2d.AddForce(force2d, ForceMode2D.Impulse);
 			}
 
 			// Spela upp ljud
@@ -105,7 +106,7 @@ public class ShootBullet : MonoBehaviour {
 	
 	// Validerar det man skriver in i inspektorn
 	// Överkurs, oroa er inte om detta
-	private void OnValidate() {
+	void OnValidate() {
 		// Lås killCloneAfter så det inte blir några negativa värden
 		if (killCloneAfter < 0) {
 			killCloneAfter = 0;
@@ -122,5 +123,32 @@ public class ShootBullet : MonoBehaviour {
 			fireWithKey = "";
 		}
 	}
+
+// Detta gör så följande inte inkluderas när ni bygger era spel
+// Just för att UnityEditor inte kan användas i byggda spel
+#if UNITY_EDITOR
+	// Visa vart den kommer skjuta
+	void OnDrawGizmosSelected() {
+		Vector3 forward = transform.forward;
+		Vector3 position = transform.position;
+
+		// Samma färg som Z-axlarna i editorn
+		Gizmos.color = UnityEditor.Handles.zAxisColor;
+
+		// Rita pil
+		float size = UnityEditor.HandleUtility.GetHandleSize(position);
+		Gizmos.DrawRay(position, transform.forward * size);
+
+		// Rita text
+		UnityEditor.Handles.Label(position + forward * size, "Shoot forward 3D");
+
+		// Samma färg som X-axlarna i editorn
+		Gizmos.color = UnityEditor.Handles.xAxisColor;
+
+		// Rita pil
+		Gizmos.DrawRay(position, transform.right * size);
+		UnityEditor.Handles.Label(position + transform.right * size, "Shoot forward 2D");
+	}
+#endif
 
 }

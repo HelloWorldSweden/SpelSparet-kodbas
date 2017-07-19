@@ -3,7 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /* 
- * Läggs till på dörrobjektet
+ * << VAD GÖR SCRIPTET ? >> 
+ *		Tillåter en dörröppnare ("DoorOpener") att kunna öppna låsta dörrar.
+ * 
+ * << VAR SÄTTER JAG SCRIPTET? >>
+ *		På ett objekt som kommer representera nyckeln.
+ * 
+ * << SCRIPTET FUNKAR INTE UTAN... >>
+ *		..att det finns dörröppnarscript ("DoorOpener") utplacerade på andra spelobjekt.
+ * 
+ * << VIKTIGT ATT NOTERA >>
+ *		Detta script är baserat på avstånd till dörröppnarna ("DoorOpener") och INTE triggers.
  */
 public class DoorKey : MonoBehaviour {
 
@@ -18,11 +28,12 @@ public class DoorKey : MonoBehaviour {
 	// (Frivilligt) Ljud som kan spelas då objektet plockas upp
 	public AudioSource soundOnPickup;
 
-	private void Update() {
-		// Sök efter "dörröppnare" och kolla om dem kan plocka upp den här nyckeln
+	void Update() {
+		// Iterera genom varje dörröppnare... En gång per objekt gå igenom följande block
+		// och spara just den iterationens dörröppnarscript ("DoorOpener") i variabeln /opener/
 		foreach (DoorOpener opener in FindObjectsOfType<DoorOpener>()) {
 			// Om inte kräver, eller om kräver och är samma
-			if (requireSameTag == false || opener.CompareTag(this.tag)) {
+			if (requireSameTag == false || opener.tag == this.tag) {
 				// Öppnaren är nära nog och har inte redan nyckel
 				if (opener.NearEnough(transform.position) == true && opener.openLocked == false) {
 					// "Ge nyckeln till objektet" - säg att den kan öppna låsta dörrar
@@ -33,7 +44,7 @@ public class DoorKey : MonoBehaviour {
 						soundOnPickup.Play();
 
 						// Rädda ljudet så den inte blir förstörd
-						if (destroyOnPickup) {
+						if (destroyOnPickup == true) {
 							// Ändra parent
 							soundOnPickup.transform.SetParent(this.transform.parent, worldPositionStays:true);
 						}

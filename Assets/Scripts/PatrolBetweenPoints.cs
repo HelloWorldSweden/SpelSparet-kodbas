@@ -3,6 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/*
+ * << VAD GÖR SCRIPTET ? >> 
+ * 		Scriptet gör så att dess objekt patrullerar mellan flera punkter.
+ * 		Scriptet tar även hänsyn till fysikmotorn ifall objektet har en Rigidbody eller liknande.
+ * 
+ * << VAR SÄTTER JAG SCRIPTET? >>
+ * 		På det spelobjekt som ska röra sig.
+ * 
+ * << SCRIPTET FUNKAR INTE UTAN... >>
+ * 		..att ge /speed/ är mer än noll.
+ * 		..att definiera stoppunkter för patrullscriptet, vilket görs genom att ge /pointsParent/ fältet
+ * 		  ett värde på ett spelobjekt där dess undersåtars positioner definierar punkterna.
+ * 
+ * << VIKTIGT ATT NOTERA >>
+ * 		Scriptet gör sitt bästa att nå punkten, men lyckas den inte kan den lätt fastna. Var varsamma!
+ * 
+ * 		Om ni placerar /pointsParent/ som undersåte till spelobjektet detta script tillhör så kommer
+ * 		målpunkterna förflyttas när detta objekt flyttas..
+ */
 [DisallowMultipleComponent]
 public class PatrolBetweenPoints : MonoBehaviour {
 
@@ -20,16 +39,22 @@ public class PatrolBetweenPoints : MonoBehaviour {
 	public bool backwards = false;
 
 	// Vilken distans räknas som att man är framme?
-	private const float stoppingDistance = 0.3f;
+	const float stoppingDistance = 0.3f;
 
-	private Transform target;
+	Transform target;
 
-	private Transform GetNearest(List<Transform> all) {
+	Transform GetNearest(List<Transform> all) {
 		Transform nearest = null;
 		float dist = 0;
 
 		foreach (Transform child in pointsParent) {
 			float thisDist = Vector3.Distance(child.position, transform.position);
+
+			// Är undersåten samma som denna? => Skippa!
+			if (child == transform) {
+				continue;
+			}
+
 			if (!nearest || thisDist < dist) {
 				nearest = child;
 				dist = thisDist;
@@ -39,7 +64,7 @@ public class PatrolBetweenPoints : MonoBehaviour {
 		return nearest;
 	}
 
-	private void NextTarget() {
+	void NextTarget() {
 		if (pointsParent == null) {
 			// Avbryt funktionen
 			target = null;
@@ -50,6 +75,11 @@ public class PatrolBetweenPoints : MonoBehaviour {
 		List<Transform> allChildren = new List<Transform>();
 
 		foreach (Transform child in pointsParent) {
+			// Är undersåten samma som denna? => Skippa!
+			if (child == transform) {
+				continue;
+			}
+
 			allChildren.Add(child);
 		}
 
@@ -89,7 +119,7 @@ public class PatrolBetweenPoints : MonoBehaviour {
 		}
 	}
 
-	private void Update() {
+	void Update() {
 		// Jämför avståndet
 		if (target == null || Vector3.Distance(target.position, transform.position) < stoppingDistance) {
 			NextTarget();
@@ -168,7 +198,7 @@ public class PatrolBetweenPoints : MonoBehaviour {
 	}
 
 	// Visualisering av vägen
-	private void OnDrawGizmosSelected() {
+	void OnDrawGizmosSelected() {
 
 		NavMeshAgent agent = GetComponent<NavMeshAgent>();
 
@@ -180,7 +210,13 @@ public class PatrolBetweenPoints : MonoBehaviour {
 			// Gå igenom alla
 			foreach (Transform child in pointsParent) {
 				if (first == null) {
+					// Spara den första
 					first = child;
+				}
+
+				// Är undersåten samma som denna? => Skippa!
+				if (child == transform) {
+					continue;
 				}
 
 				if (last != null) {

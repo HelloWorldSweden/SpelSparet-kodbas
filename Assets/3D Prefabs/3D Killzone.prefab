@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 65505363275089204}
   - component: {fileID: 114141417112528478}
   m_Layer: 0
-  m_Name: Killzone 3D
+  m_Name: 3D Killzone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

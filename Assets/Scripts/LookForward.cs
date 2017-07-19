@@ -1,9 +1,17 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/* 
- * Roterar spelobjektet framåt. Alltså dit den rör sig
+/*
+ * << VAD GÖR SCRIPTET ? >> 
+ * 		Roterar spelobjektet den tillhör i den riktning som den rör sig mot.
+ * 
+ * << VAR SÄTTER JAG SCRIPTET? >>
+ * 		På det spelobjekt som rör sig (alltså inte en av dess undersåtar)
+ * 		med andra ord: oftast det objekt med Rigidbody'n
+ * 
+ * << VIKTIGT ATT NOTERA >>
+ * 		Ignorera /worldUp/ ifall ni inte ska ha ett spel där man springer på väggarna!
  */
 public class LookForward : MonoBehaviour
 {
@@ -13,13 +21,13 @@ public class LookForward : MonoBehaviour
 	public Vector3 worldUp = Vector3.up;
 
 	// Används för att jämföra hur objektet förflyttade sig
-	private Vector3 oldPosition;
+	Vector3 oldPosition;
 
-	private void Start() {
+	void Start() {
 		oldPosition = transform.position;
 	}
 
-	private void Update()
+	void Update()
 	{
 		// Normalisera /worldUp/ och nollställ ifall nära 0
 		if (worldUp.sqrMagnitude < Vector3.kEpsilon) {
@@ -69,8 +77,6 @@ public class LookForward : MonoBehaviour
 		// Rör sig snabbt nog?
 		if (forward.sqrMagnitude > Vector3.kEpsilon) {
 			forward.Normalize();
-			//print(Quaternion.LookRotation(forward, worldUp).eulerAngles.z);
-
 			transform.rotation = Quaternion.LookRotation(forward, worldUp);
 		}
 

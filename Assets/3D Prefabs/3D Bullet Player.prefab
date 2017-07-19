@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 54520038755158908}
   - component: {fileID: 114150150459413962}
   m_Layer: 0
-  m_Name: Rigidbody3D Bullet
+  m_Name: 3D Bullet Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

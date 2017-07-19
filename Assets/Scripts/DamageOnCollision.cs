@@ -2,7 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Högst 1 DamageOnCollision per GameObjekt
+/* 
+ * << VAD GÖR SCRIPTET ? >> 
+ *		Gör skada på HealthScript.
+ * 
+ * << VAR SÄTTER JAG SCRIPTET? >>
+ *		På ett objekt som har en collider (både 2D och 3D funkar).
+ * 
+ * << SCRIPTET FUNKAR INTE UTAN... >>
+ *		..att det finns en vanlig collider med /isTrigger/ urcheckat. Alltså INTE en trigger!
+ *		
+ *		..att objektet som kolliderades med har annan tagg ifall /damageIfSameTag/ fältet är urcheckat.
+ * 
+ * << VIKTIGT ATT NOTERA >>
+ *		Ni kan även göra livpaket genom att sätta /damage/ fältet till ett negativt värde.
+ *		
+ *		Finns ett systerscript vid namn "DamageOnTrigger" som gör liknande grej.
+ */
 [DisallowMultipleComponent]
 public class DamageOnCollision : MonoBehaviour {
 
@@ -19,7 +35,7 @@ public class DamageOnCollision : MonoBehaviour {
 	public void DealDamage(GameObject other) {
 		// Avgör ifall ska skada objektet som kolliderades
 		// Om damageIfSameTag == true, eller om objektet som kolliderades med har en annan tagg
-		if (damageIfSameTag == true || other.CompareTag(gameObject.tag) == false) {
+		if (damageIfSameTag == true || other.tag != gameObject.tag) {
 			// Skicka 'skada' meddelande till det den kolliderade med
 			other.SendMessage("TakeDamage", damage, SendMessageOptions.DontRequireReceiver);
 
@@ -31,19 +47,19 @@ public class DamageOnCollision : MonoBehaviour {
 	}
 
 	// Kollisions metod för 2D
-	private void OnCollisionStay2D(Collision2D collision) {
+	void OnCollisionEnter2D(Collision2D collision) {
 		// Hämta main objektet att skicka meddelande till
 		GameObject main = collision.gameObject;
 		if (collision.rigidbody != null) {
 			main = collision.rigidbody.gameObject;
 		}
-
+		
 		// Annan funktion så man slipper skriva om
 		DealDamage(main);
 	}
 
 	// Kollisions metod för 3D
-	private void OnCollisionStay(Collision collision) {
+	void OnCollisionEnter(Collision collision) {
 		// Hämta main objektet att skicka meddelande till
 		GameObject main = collision.gameObject;
 		if (collision.rigidbody != null) {
@@ -52,11 +68,6 @@ public class DamageOnCollision : MonoBehaviour {
 
 		// Annan funktion så man slipper skriva om
 		DealDamage(main);
-	}
-
-	private void OnValidate() {
-		// Tvinga damage variabelns värde att vara positivt eller 0
-		damage = Mathf.Max(damage, 0);
 	}
 
 }

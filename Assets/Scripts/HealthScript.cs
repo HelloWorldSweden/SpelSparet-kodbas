@@ -3,7 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// Högst 1 HealthScript per GameObjekt
+/* 
+ * << VAD GÖR SCRIPTET ? >> 
+ *		Basic liv script för att hålla koll på objektets liv.
+ * 
+ * << VAR SÄTTER JAG SCRIPTET? >>
+ *		Helst så "högt" som möjligt i parent-trappan (inte högt upp i listan utan "längre vänster" i hiarkin).
+ *		På ett objekt som kan ha liv. T.ex. spelaren eller fiender.
+ * 
+ * << VIKTIGT ATT NOTERA >>
+ *		Fältet /maxHealth/ definierar endast hur högt livet kan gå vid livpaket
+ *		(t.ex vid DamageOnCollision som har negativ skada, dvs helar)
+ */
 [DisallowMultipleComponent]
 public class HealthScript : MonoBehaviour {
 
@@ -21,7 +32,7 @@ public class HealthScript : MonoBehaviour {
 	// (Frivilligt) Ljud som kan spelas då skriptet får 0 eller mindre liv
 	public AudioSource soundOnDeath;
 
-	private void TakeDamage(int damage) {
+	void TakeDamage(int damage) {
 		// Sänk livet med värdet från /damage/ samt lås värdet inom intervallet 0 till /maxHealth/
 		health = Mathf.Clamp(health - damage, 0, maxHealth);
 
@@ -74,7 +85,7 @@ public class HealthScript : MonoBehaviour {
 		}
 	}
 
-	private void OnValidate() {
+	void OnValidate() {
 		// Tvinga health att vara positivt eller 0
 		health = Mathf.Max(health, 0);
 		// Öka maxHealth om health > maxHealth
